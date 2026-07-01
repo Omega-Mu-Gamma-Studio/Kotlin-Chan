@@ -1,33 +1,35 @@
 {
   "id": "1.6",
-  "title": "Taking Input — the player types something",
+  "title": "Types and Type Inference",
   "type": "coding",
   "phase1": {
-    "code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string playerName;\n    int playerAge;\n    \n    // Ask for input\n    std::cout << \"Welcome, adventurer!\" << std::endl;\n    std::cout << \"What is your name? \";\n    std::cin >> playerName;\n    \n    std::cout << \"How old are you, \" << playerName << \"? \";\n    std::cin >> playerAge;\n    \n    std::cout << \"\\n=== Character Sheet ===\" << std::endl;\n    std::cout << \"Name: \" << playerName << std::endl;\n    std::cout << \"Age: \" << playerAge << std::endl;\n    \n    // Input with multiple words\n    std::cin.ignore();  // Clear the buffer\n    std::string fullName;\n    std::cout << \"Enter your full name (with spaces): \";\n    std::getline(std::cin, fullName);\n    std::cout << \"Full name: \" << fullName << std::endl;\n    \n    return 0;\n}",
-    "output": "Welcome, adventurer!\nWhat is your name? Hero\nHow old are you, Hero? 25\n\n=== Character Sheet ===\nName: Hero\nAge: 25\nEnter your full name (with spaces): Hero the Brave\nFull name: Hero the Brave",
-    "explanation": "🎮 **Input is how the player controls your game.**\n\n`std::cin` — Console input. It reads what the player types.\n\n**Reading different types:**\n| Type | How to read |\n|------|-------------|\n| `int` | `std::cin >> variable;` |\n| `double` | `std::cin >> variable;` |\n| `std::string` (no spaces) | `std::cin >> variable;` |\n| `std::string` (with spaces) | `std::getline(std::cin, variable);` |\n\n**Common issue (and fix):**\n- `std::cin >>` leaves a newline in the buffer\n- `std::cin.ignore()` clears the buffer before `getline()`\n\n**Game design note:**\nIn a real game, you'd use input for:\n- Character creation (name, class, stats)\n- Menu selections (\"Press 1 to attack\")\n- Saving/loading (\"Enter save name:\")\n\n**PlusPlus-chan says:**\n\"Java-chan has `Scanner`. I have `std::cin`. Same concept, but I don't hide the buffer management from you. You need to know why `getline()` behaves differently.\"",
-    "openingDialogue": "Now the player can talk back. This is when it gets real. 🎮💬"
+    "code": "fun main() {\n    // ---- Type inference ----\n    val name = \"Kotlin-chan\"   // Inferred as String\n    val age = 25               // Inferred as Int\n    val price = 19.99          // Inferred as Double\n    val isFun = true           // Inferred as Boolean\n    val initial = 'K'          // Inferred as Char\n\n    println(\"Name: $name (${name::class.simpleName})\")\n    println(\"Age: $age (${age::class.simpleName})\")\n    println(\"Price: $price (${price::class.simpleName})\")\n    println(\"Is fun: $isFun (${isFun::class.simpleName})\")\n    println(\"Initial: $initial (${initial::class.simpleName})\")\n\n    // ---- Explicit types ----\n    val explicitString: String = \"Hello\"\n    val explicitInt: Int = 42\n    val explicitDouble: Double = 3.14\n    val explicitBoolean: Boolean = false\n\n    // ---- Numbers ----\n    val byte: Byte = 127\n    val short: Short = 32767\n    val int: Int = 2_147_483_647\n    val long: Long = 9_223_372_036_854_775_807\n    val float: Float = 3.14f\n    val double: Double = 3.14\n\n    // ---- Unsigned (Kotlin 1.3+) ----\n    val uByte: UByte = 255u\n    val uInt: UInt = 4_294_967_295u\n\n    // ---- Type conversion ----\n    val intValue = 42\n    val doubleValue = intValue.toDouble()\n    val stringValue = intValue.toString()\n\n    println(\"\\n=== Type Conversion ===\")\n    println(\"Int to Double: $doubleValue\")\n    println(\"Int to String: $stringValue\")\n}",
+    "output": "Name: Kotlin-chan (String)\nAge: 25 (Int)\nPrice: 19.99 (Double)\nIs fun: true (Boolean)\nInitial: K (Char)\n\n=== Type Conversion ===\nInt to Double: 42.0\nInt to String: 42",
+    "explanation": "🤖 **Kotlin has strong type inference — but explicit types are always available.**\n\n**Basic types:**\n\n| Type | Description | Example |\n|------|-------------|---------|\n| `String` | Text | `\"Hello\"` |\n| `Int` | Whole number | `42` |\n| `Double` | Decimal | `3.14` |\n| `Boolean` | True/false | `true` |\n| `Char` | Single character | `'K'` |\n| `Byte` | 8-bit integer | `127` |\n| `Short` | 16-bit integer | `32767` |\n| `Long` | 64-bit integer | `9223372036854775807` |\n| `Float` | 32-bit decimal | `3.14f` |\n\n**Kotlin-chan says:**\n\"Kotlin infers types. But you can always be explicit. Choose clarity.\"\n\n**Type inference rules:**\n\n| Expression | Inferred Type |\n|------------|---------------|\n| `\"Hello\"` | `String` |\n| `42` | `Int` |\n| `3.14` | `Double` |\n| `true` | `Boolean` |\n| `'K'` | `Char` |\n\n**Type conversion methods:**\n\n| Method | Purpose |\n|--------|---------|\n| `toInt()` | Convert to Int |\n| `toDouble()` | Convert to Double |\n| `toString()` | Convert to String |\n| `toLong()` | Convert to Long |\n| `toByte()` | Convert to Byte |\n\n**Kotlin-chan says:**\n\"Kotlin doesn't do automatic widening. You convert explicitly. No surprises.\"",
+    "openingDialogue": "Types. Inference. Explicit when needed. Let's go. 🤖"
   },
   "phase2": {
-    "brokenCode": "#include <iostream>\n#include <string>\n\nint main() {\n    int age;\n    std::string name;\n    \n    std::cout << \"Enter your age: \";\n    std::cin >> age;\n    \n    std::cout << \"Enter your name: \";\n    std::getline(std::cin, name);  // Problem: this skips!\n    \n    std::cout << \"Name: \" << name << \", Age: \" << age << std::endl;\n    return 0;\n}",
-    "errorMessage": "Enter your age: 25\nEnter your name: Name: , Age: 25\n\n(No error — but the name input was SKIPPED!)",
-    "explanation": "This is the classic `cin` vs `getline()` trap.\n\n**What's happening:**\n1. `std::cin >> age` reads the number 25\n2. It leaves the newline character `\\n` in the buffer\n3. `std::getline()` reads that leftover newline as an empty string\n4. So `name` is empty, and the program skips the name input\n\n**The fix:**\n```cpp\nstd::cin >> age;\nstd::cin.ignore();  // ← This clears the buffer!\nstd::getline(std::cin, name);\n```\n\n**PlusPlus-chan says:**\n\"This is a rite of passage. Every C++ developer has been bitten by this. Now you know why.\""
+    "brokenCode": "fun main() {\n    val number = 42\n    val text: String = number  // Error!\n\n    val result = number + 3.14  // What type is this?\n    println(result)\n}",
+    "errorMessage": "main.kt:3:23: error: type mismatch: inferred type is Int but String was expected\n    val text: String = number\n                      ^",
+    "explanation": "🤖 **Kotlin doesn't automatically convert between types.**\n\n**The problem:**\n```kotlin\nval number = 42\nval text: String = number  // ❌ Can't assign Int to String\n```\n\n**The fix:**\n```kotlin\nval text: String = number.toString()  // ✅ Convert explicitly\n```\n\n**Another problem:**\n```kotlin\nval result = number + 3.14  // Int + Double = Double\n// result is inferred as Double\n```\n\n**The fix:**\n```kotlin\nval result = number + 3.14  // ✅ This works — implicit for operations\nval intResult = (number + 3.14).toInt()  // Then convert\n```\n\n**Kotlin-chan says:**\n\"No implicit conversions. That's a feature, not a bug.\"\n\n**Type conversion rules:**\n| What you want | How to do it |\n|---------------|--------------|\n| Int to String | `.toString()` |\n| String to Int | `.toInt()` |\n| Int to Double | `.toDouble()` |\n| Double to Int | `.toInt()` |\n| Double to String | `.toString()` |"
   },
   "phase3": {
-    "prompt": "Write a C++ program that:\n\n1. Asks the player \"Enter your class (Warrior/Mage/Rogue): \" and stores it in a `std::string`\n2. Asks the player \"Enter your starting level: \" and stores it in an `int`\n3. Prints a character summary:\n```\n=== Character Created ===\nClass: [class]\nStarting Level: [level]\n```\n\nRequirements:\n- Use `std::cin` for the level (int)\n- Use `std::getline()` for the class (string with spaces allowed)\n- Handle the buffer issue correctly with `std::cin.ignore()`",
+    "prompt": "Write a program that:\n\n1. Declares an `Int` variable with value `100`\n2. Converts it to a `Double`\n3. Converts it to a `String`\n4. Prints all three values\n\nRequirements:\n- Use type conversion methods\n- Print each value with its type\n- Use `::class.simpleName` to show the type",
     "validationPattern": {
-      "required": ["std::cin", "std::getline", "std::cin.ignore", "int", "std::string"],
-      "forbidden": ["using namespace"],
-      "fullRegex": "std::cin\\s*>>\\s*\\w+\\s*;[\\s\\S]*std::cin\\.ignore\\s*\\([\\s\\S]*\\)[\\s\\S]*std::getline\\s*\\(\\s*std::cin\\s*,\\s*\\w+\\s*\\)"
+      "required": ["toDouble", "toString", "println", "::class"],
+      "forbidden": [";"],
+      "fullRegex": "\\.toDouble\\s*\\([\\s\\S]*\\.toString\\s*\\([\\s\\S]*::class"
     },
     "dialogueHints": [
-      "Read the level with `std::cin >> level`",
-      "Call `std::cin.ignore();` before `getline()`",
-      "Read the class with `std::getline(std::cin, characterClass)`",
-      "Print both values"
+      "`val number = 100`",
+      "`val double = number.toDouble()`",
+      "`val string = number.toString()`",
+      "`println(\"Int: $number (${number::class.simpleName})\")`",
+      "`println(\"Double: $double (${double::class.simpleName})\")`",
+      "`println(\"String: $string (${string::class.simpleName})\")`"
     ],
-    "solution": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string characterClass;\n    int level;\n    \n    std::cout << \"Enter your class (Warrior/Mage/Rogue): \";\n    std::getline(std::cin, characterClass);\n    \n    std::cout << \"Enter your starting level: \";\n    std::cin >> level;\n    \n    std::cout << \"\\n=== Character Created ===\" << std::endl;\n    std::cout << \"Class: \" << characterClass << std::endl;\n    std::cout << \"Starting Level: \" << level << std::endl;\n    \n    return 0;\n}",
-    "openingDialogue": "Let the player build their character. Make it real. 🎭"
+    "solution": "fun main() {\n    val number = 100\n    val double = number.toDouble()\n    val string = number.toString()\n\n    println(\"Int: $number (${number::class.simpleName})\")\n    println(\"Double: $double (${double::class.simpleName})\")\n    println(\"String: $string (${string::class.simpleName})\")\n}",
+    "openingDialogue": "Type inference and conversion. Show me. 🤖"
   },
   "xpReward": 10
 }

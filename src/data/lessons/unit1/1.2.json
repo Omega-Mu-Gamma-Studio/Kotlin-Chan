@@ -1,30 +1,30 @@
 {
   "id": "1.2",
-  "title": "Setting up your environment (g++, VS Code)",
+  "title": "Setting Up Android Studio",
   "type": "conceptual",
   "phase1": {
     "code": "",
     "output": "",
-    "explanation": "Before we write any code, let's get your environment set up.\n\n🔧 **What you need:**\n\n1. **A C++ Compiler (g++):**\n   - Windows: Install MinGW-w64 or use MSVC\n   - macOS: Install Xcode Command Line Tools (`xcode-select --install`)\n   - Linux: `sudo apt install g++` (Ubuntu/Debian)\n\n   Check it works: Open a terminal and type `g++ --version`\n\n2. **VS Code (or any editor):**\n   - Download from code.visualstudio.com\n   - Install the C/C++ extension by Microsoft\n\n3. **Your First Project:**\n   Create a folder called `cpp-game` — this is where your journey begins.\n\n💡 **Pro tip from PlusPlus-chan:**\n\nLearn to compile from the command line before using an IDE. That's how you learn what's really happening. An IDE hides the compile steps, but you need to know them:\n\n```bash\ng++ -o myprogram main.cpp\n./myprogram\n```\n\nJava-chan hides the compiler from you. I don't. You're going to see every step of the transformation from code to executable.\n\n**You're not just learning C++ — you're learning how computers actually work.** That's the part that matters.",
-    "openingDialogue": "No fancy IDEs hiding the truth. Terminal first. Always. 🖥️💀"
+    "explanation": "🤖 **Android Studio is the official IDE for Kotlin Android development.**\n\n**What you need:**\n\n| Component | Purpose |\n|-----------|---------|\n| JDK (Java Development Kit) | Compile Java/Kotlin code |\n| Android Studio | Full IDE |\n| Android SDK | Android platform tools |\n| Android Emulator | Test without a physical device |\n\n**Android Studio features:**\n- Kotlin support out of the box\n- Visual layout editor\n- Built-in emulator\n- Code completion and refactoring\n- Debugging tools\n- APK analyzer\n\n**Kotlin-chan says:**\n\"Android Studio is your workspace. Make yourself at home.\"\n\n**Recommended setup:**\n\n| Step | Action |\n|------|--------|\n| 1 | Download Android Studio from developer.android.com |\n| 2 | Install with default settings |\n| 3 | Launch and create a new project |\n| 4 | Choose \"Empty Activity\" |\n| 5 | Select Kotlin as the language |\n\n**First project settings:**\n\n| Setting | Recommendation |\n|---------|----------------|\n| Language | Kotlin |\n| Minimum SDK | API 24 (Android 7.0) |\n| Template | Empty Activity |\n| Project Location | ~/AndroidStudioProjects |\n\n**Kotlin-chan says:**\n\"Kotlin is the default now. Make sure it's selected. You don't want to start with Java.\"\n\n**Quick tips:**\n1. Enable auto-import\n2. Use shortcuts: `Ctrl+Space` for completion\n3. `Alt+Enter` for quick fixes\n4. `Ctrl+Shift+F10` to run your app\n5. `Ctrl+Shift+R` for refactoring",
+    "openingDialogue": "Android Studio. Your new workspace. Let's get it set up. 🤖"
   },
   "phase2": {
     "brokenCode": "",
     "errorMessage": "",
-    "explanation": "Conceptual lesson — no broken code here!\n\nCommon issue: `g++: command not found`\n\nThis means the compiler isn't in your PATH. Don't panic. PlusPlus-chan has seen this before.\n\n**Fixes:**\n- Windows: Make sure MinGW/bin is in your PATH\n- macOS: Run `xcode-select --install`\n- Linux: `sudo apt install g++` (or your distro's equivalent)\n\n**Check your work:**\nOpen a terminal and type:\n```bash\ng++ --version\n```\nIf you see a version number, you're ready. If not... PlusPlus-chan is patient. She'll wait."
+    "explanation": "🤖 **Common setup mistakes:**\n\n**Mistake 1: Wrong language selected**\n```\n❌ New Project → Java\n✅ New Project → Kotlin\n```\n\n**Kotlin-chan says:**\n\"Always select Kotlin. That's why we're here.\"\n\n**Mistake 2: Too low or too high SDK version**\n```\n❌ API 15 (Android 4.0)\n❌ API 33 (Too new, limited devices)\n✅ API 24 (Android 7.0, good balance)\n```\n\n**Mistake 3: Not enabling USB debugging**\n- Required for testing on physical devices\n- Enable in Settings → Developer options\n\n**Mistake 4: Not setting up the emulator**\n- Create a virtual device\n- Choose a system image\n- Test runs much faster with emulator\n\n**Kotlin-chan says:**\n\"Set it up right the first time. Trust me.\"\n\n**Minimum requirements:**\n\n| Component | Minimum | Recommended |\n|-----------|---------|-------------|\n| RAM | 4GB | 8GB |\n| Disk space | 10GB | 20GB |\n| OS | Windows 8 / macOS 10.13 | Latest |\n| CPU | x86_64 | x86_64 with virtualization |"
   },
   "phase3": {
-    "prompt": "What command do you use to compile a C++ file called `main.cpp` into an executable called `mygame`?\n\nA) `g++ main.cpp -o mygame`\nB) `g++ -o main.cpp mygame`\nC) `compile main.cpp mygame`\nD) `g++ main.cpp --exec mygame`\n\nSelect the CORRECT command.",
+    "prompt": "What language should you select when creating a new Android project in Android Studio?\n\nA) Java\nB) Kotlin\nC) C++\nD) Python\n\nSelect the CORRECT answer.",
     "validationPattern": {
-      "mcqAnswer": "A"
+      "mcqAnswer": "B"
     },
     "dialogueHints": [
-      "The '-o' flag means 'output'.", 
-      "The source file comes first, then the output flag.", 
-      "Think about what order makes sense: source → output."
+      "This is a Kotlin course. Think about the language we're learning.",
+      "It's the default for new projects now.",
+      "Google officially recommends it."
     ],
     "solution": null,
-    "openingDialogue": "Time to prove you can use the terminal. Don't worry, I'll help. 💻"
+    "openingDialogue": "New project. What language? 🤔"
   },
   "xpReward": 10
 }

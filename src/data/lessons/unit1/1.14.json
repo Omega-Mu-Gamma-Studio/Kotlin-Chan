@@ -1,33 +1,30 @@
 {
   "id": "1.14",
-  "title": "Strings & string manipulation",
-  "type": "coding",
+  "title": "Running on Emulator and Device",
+  "type": "conceptual",
   "phase1": {
-    "code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::cout << \"=== String Manipulation ===\" << std::endl;\n    \n    // Creating strings\n    std::string playerName = \"Hero\";\n    std::string greeting = \"Welcome, \";\n    \n    // Concatenation\n    std::string message = greeting + playerName + \"!\";\n    std::cout << message << std::endl;\n    \n    // String length\n    std::string gameTitle = \"Dungeon Quest\";\n    std::cout << \"Title: '\" << gameTitle << \"' (\" << gameTitle.length() << \" characters)\" << std::endl;\n    \n    // Accessing characters\n    std::cout << \"First character: \" << gameTitle[0] << std::endl;\n    std::cout << \"Last character: \" << gameTitle[gameTitle.length() - 1] << std::endl;\n    \n    // Substring\n    std::string sub = gameTitle.substr(0, 7);  // \"Dungeon\"\n    std::cout << \"Substring (0-7): '\" << sub << \"'\" << std::endl;\n    \n    // Find\n    std::string sentence = \"The hero defeated the dragon.\";\n    size_t pos = sentence.find(\"dragon\");\n    if (pos != std::string::npos) {\n        std::cout << \"Found 'dragon' at position \" << pos << std::endl;\n    }\n    \n    // Replace\n    std::string story = \"The player opened the chest.\";\n    story.replace(story.find(\"player\"), 6, \"hero\");\n    std::cout << \"Replaced: \" << story << std::endl;\n    \n    // Uppercase/Lowercase (manual)\n    std::string power = \"FIREBALL\";\n    for (char& c : power) {\n        c = std::tolower(c);\n    }\n    std::cout << \"Lowercase: \" << power << std::endl;\n    \n    // Checking if empty\n    std::string empty = \"\";\n    if (empty.empty()) {\n        std::cout << \"String is empty!\" << std::endl;\n    }\n    \n    // Comparison\n    std::string str1 = \"Apple\";\n    std::string str2 = \"Banana\";\n    if (str1 < str2) {\n        std::cout << str1 << \" comes before \" << str2 << std::endl;\n    }\n    \n    return 0;\n}",
-    "output": "=== String Manipulation ===\nWelcome, Hero!\nTitle: 'Dungeon Quest' (13 characters)\nFirst character: D\nLast character: t\nSubstring (0-7): 'Dungeon'\nFound 'dragon' at position 20\nReplaced: The hero opened the chest.\nLowercase: fireball\nString is empty!\nApple comes before Banana",
-    "explanation": "🎮 **Strings are how games store text.**\n\n**Key string operations:**\n\n| Operation | Code |\n|-----------|------|\n| Length | `str.length()` |\n| Access character | `str[0]` |\n| Concatenation | `str1 + str2` |\n| Substring | `str.substr(start, length)` |\n| Find | `str.find(\"text\")` |\n| Replace | `str.replace(pos, length, \"new\")` |\n| Empty check | `str.empty()` |\n| Comparison | `str1 == str2`, `str1 < str2` |\n\n**Game uses:**\n- Player names\n- Dialogue\n- Item descriptions\n- Quest text\n- UI labels\n\n**PlusPlus-chan says:**\n\"Strings are everywhere in games. Java-chan has `String`. I have `std::string`. Same idea, slightly different syntax.\"\n\n**⚠️ Important:**\n- Include `#include <string>`\n- `std::string` is mutable (you can modify it)\n- `length()` returns a `size_t`\n- `find()` returns `std::string::npos` if not found",
-    "openingDialogue": "Strings: your game's words. Every story needs them. 📝"
+    "code": "",
+    "output": "",
+    "explanation": "🤖 **Running your Android app on an emulator or a physical device.**\n\n**Emulator:**\n- Virtual Android device on your computer\n- Good for testing different screen sizes\n- No physical device needed\n- Slower than physical device\n\n**Physical device:**\n- Real Android phone or tablet\n- Faster performance\n- Test on actual hardware\n- Must enable USB debugging\n\n**Kotlin-chan says:**\n\"Always test on both. Emulator for speed. Device for reality.\"\n\n**Setting up the emulator:**\n\n| Step | Action |\n|------|--------|\n| 1 | Open AVD Manager (Tools → AVD Manager) |\n| 2 | Click \"Create Virtual Device\" |\n| 3 | Choose device (Pixel 4, etc.) |\n| 4 | Select system image (recommended) |\n| 5 | Name the AVD |\n| 6 | Click \"Finish\" |\n\n**Starting the emulator:**\n1. Click the play button in AVD Manager\n2. Wait for the emulator to boot\n3. Run your app\n\n**Setting up a physical device:**\n\n| Step | Action |\n|------|--------|\n| 1 | Enable Developer Options (tap build number 7 times) |\n| 2 | Enable USB Debugging |\n| 3 | Connect device via USB |\n| 4 | Approve USB debugging on device |\n| 5 | Select device in Android Studio |\n\n**Running the app:**\n1. Click the green run button\n2. Select target device\n3. Wait for build and install\n4. App launches automatically\n\n**Kotlin-chan says:**\n\"An emulator is great. A physical device is better. Both is best.\"\n\n**Troubleshooting:**\n| Issue | Solution |\n|-------|----------|\n| Emulator not starting | Check virtualization in BIOS |\n| Device not recognized | Install USB drivers |\n| App not installing | Check debuggable flag |\n| Slow emulator | Use x86 image, assign more RAM |\n\n**Key shortcuts:**\n| Shortcut | Action |\n|----------|--------|\n| `Ctrl+R` | Run app |\n| `Ctrl+Shift+R` | Run app with debug |\n| `Ctrl+Shift+F10` | Run current file |\n| `Alt+Shift+F10` | Run with dropdown |",
+    "openingDialogue": "Emulator. Device. Run your app. Let's go. 🤖"
   },
   "phase2": {
-    "brokenCode": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name = \"Hero\";\n    \n    // Forgetting to include <string> already done\n    // But using c-string functions on std::string incorrectly\n    std::cout << \"Name length: \" << strlen(name) << std::endl;  // ERROR!\n    \n    return 0;\n}",
-    "errorMessage": "main.cpp:8:34: error: no matching function for call to 'strlen(std::string&)'\n    8 |     std::cout << \"Name length: \" << strlen(name) << std::endl;\n      |                                  ^~~~~~\n1 error",
-    "explanation": "`strlen()` is for C-style strings (char arrays). `std::string` has its own `.length()` method.\n\n**The fix:**\n```cpp\nstd::cout << \"Name length: \" << name.length() << std::endl;\n```\n\n**PlusPlus-chan says:**\n\"This is a common C vs C++ mix-up. `std::string` is the C++ way. Use its methods, not C functions.\"\n\n**When to use what:**\n- `std::string` → `.length()`, `.substr()`, `.find()`\n- `char[]` → `strlen()`, `strcmp()`"
+    "brokenCode": "",
+    "errorMessage": "",
+    "explanation": "🤖 **Common running issues:**\n\n**Issue 1: Emulator doesn't start**\n```\nError: Unable to start emulator\n```\n\n**Fix:**\n- Enable Intel HAXM or AMD Hyper-V\n- Check virtualization is enabled in BIOS\n- Create a new AVD\n\n**Issue 2: Device not recognized**\n```\nError: No connected devices\n```\n\n**Fix:**\n- Enable USB debugging\n- Install USB drivers\n- Try different USB cable\n- Restart ADB: `adb kill-server && adb start-server`\n\n**Issue 3: App won't install**\n```\nError: INSTALL_FAILED_UPDATE_INCOMPATIBLE\n```\n\n**Fix:**\n- Uninstall existing app\n- Run: `adb uninstall com.example.myapp`\n- Clean project → Rebuild\n\n**Issue 4: Emulator is slow**\n**Fix:**\n- Use x86 system image\n- Allocate more RAM\n- Use hardware acceleration\n- Close other apps\n\n**Kotlin-chan says:**\n\"Troubleshooting is part of development. Keep calm and debug.\""
   },
   "phase3": {
-    "prompt": "Write a C++ program that:\n\n1. Creates a string `playerName = \"Hero\"`\n2. Creates a string `item = \"Sword\"`\n3. Concatenates them into: \"Hero found a Sword!\"\n4. Prints the length of the string\n5. Finds the position of \"Sword\" in the string\n6. Replaces \"Sword\" with \"Shield\"\n7. Prints the final string\n\nRequirements:\n- Use `std::string`\n- Use `.length()`, `.find()`, `.replace()`\n- Print results at each step",
+    "prompt": "What is the first step to run your app on a physical Android device?\n\nA) Connect via USB\nB) Enable Developer Options\nC) Install Android Studio\nD) Build the app\n\nSelect the CORRECT answer.",
     "validationPattern": {
-      "required": ["std::string", ".length()", ".find()", ".replace()", "std::cout"],
-      "forbidden": ["using namespace"],
-      "fullRegex": "std::string\\s+\\w+\\s*=\\s*\"[^\"]*\"[\\s\\S]*\\.length\\s*\\([\\s\\S]*\\)[\\s\\S]*\\.find\\s*\\([\\s\\S]*\\)[\\s\\S]*\\.replace\\s*\\([\\s\\S]*\\)"
+      "mcqAnswer": "B"
     },
     "dialogueHints": [
-      "Create string: `std::string message = playerName + \" found a \" + item + \"!\";`",
-      "Length: `message.length()`",
-      "Find: `message.find(\"Sword\")`",
-      "Replace: `message.replace(pos, 5, \"Shield\")`"
+      "Think about what needs to be enabled first.",
+      "You need to unlock developer features on the phone.",
+      "It involves tapping the build number 7 times."
     ],
-    "solution": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string playerName = \"Hero\";\n    std::string item = \"Sword\";\n    \n    std::string message = playerName + \" found a \" + item + \"!\";\n    std::cout << \"Message: \" << message << std::endl;\n    \n    std::cout << \"Length: \" << message.length() << std::endl;\n    \n    size_t pos = message.find(\"Sword\");\n    std::cout << \"'Sword' found at position: \" << pos << std::endl;\n    \n    message.replace(pos, 5, \"Shield\");\n    std::cout << \"Updated message: \" << message << std::endl;\n    \n    return 0;\n}",
-    "openingDialogue": "Strings tell your game's story. Master them. 📖"
+    "solution": null,
+    "openingDialogue": "Running on a device. What's the first step? 🤔"
   },
   "xpReward": 10
 }
