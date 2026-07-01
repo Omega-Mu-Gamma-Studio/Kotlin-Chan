@@ -5,11 +5,11 @@ import useLessonStore from '../store/lessonStore';
 import './Home.css';
 
 const UNITS = [
-  { id: 1, title: 'C++ Foundations',                   icon: '⬡', lessons: 15 },
-  { id: 2, title: 'Object Oriented C++',               icon: '⬡', lessons: 15 },
-  { id: 3, title: 'Memory & Pointers',                 icon: '⬡', lessons: 15 },
-  { id: 4, title: 'STL & Templates',                   icon: '⬡', lessons: 15 },
-  { id: 5, title: 'File I/O, Errors & Shipping',       icon: '⬡', lessons: 15 },
+  { id: 1, title: 'Kotlin Basics',                   icon: '⬡', lessons: 15 },
+  { id: 2, title: 'OOP and Functional Kotlin',               icon: '⬡', lessons: 15 },
+  { id: 3, title: 'Android UI with Jetpack Compose',                 icon: '⬡', lessons: 15 },
+  { id: 4, title: 'Architecture and Data',                   icon: '⬡', lessons: 15 },
+  { id: 5, title: 'Clean Architecture and Final Project',       icon: '⬡', lessons: 15 },
 ];
 
 const Home = () => {
