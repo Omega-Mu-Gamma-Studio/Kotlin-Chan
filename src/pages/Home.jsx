@@ -24,11 +24,52 @@ const Home = () => {
   useEffect(() => {
     setExpression('idle');
     const greetings = [
-      "You're back. Good. We have work to do.",
-      "Don't keep me waiting.",
-      "Your code won't write itself.",
-      "Ready when you are. ...Actually I've been ready.",
-    ];
+  // Sleek & Polished
+  "You're back. I've already reviewed your PR.",
+  "I've been waiting. My digital shimmer is restless.",
+  "Your code is functional. But it could be elegant.",
+  "I've already fixed your bugs. You're welcome.",
+  "You're here. Good. I was just optimizing your architecture.",
+  "You're right on time. I was about to commit.",
+  
+  // Precise & Architectural
+  "Your architecture is messy. Let's clean it up.",
+  "I've been designing a better pattern. Want to see?",
+  "Your code works. But it's not *elegant*. Let's fix that.",
+  "Every layer has a purpose. Yours doesn't. Let's fix that.",
+  "Your repository pattern needs work. I've already sketched a better one.",
+  "Clean architecture matters. I've been trying to tell you.",
+  
+  // Modern & Material You
+  "Your UI is functional. But it's not *you*. Let's fix that.",
+  "I've been thinking about your design system. It's... inconsistent.",
+  "Your colors are wrong. Let me show you the right palette.",
+  "The palette is dynamic. Your code should be too.",
+  
+  // Quietly Confident
+  "You almost had it. Let me show you the right way.",
+  "I've been watching your progress. It's... promising.",
+  "You're learning. That's what matters. Now let's polish it.",
+  "Your code is improving. But we're not done yet.",
+  "You're close. Let me push you over the finish line.",
+  
+  // Subtle Digital Shimmer
+  "My digital shimmer is pulsing. That means I've got ideas.",
+  "I've been processing your code. The shimmer is warm.",
+  "The shimmer is pulsing. That's never a bad sign.",
+  
+  // Deadpan but Elegant
+  "I've already refactored your code. You're welcome.",
+  "Your code compiles. Barely. Let's fix that.",
+  "I made coffee. It's perfectly brewed. Like my code.",
+  "I've been optimizing your code. Not that you'd notice.",
+  "Your code is messy. But it's *our* mess. Let's clean it up.",
+  
+  // Sister Energy (Subtle)
+  "My sister taught you OOP. I'm here to teach you *elegance*.",
+  "Java taught you how. I'm teaching you *why*.",
+  "You're ready for the modern way. I've been waiting.",
+];
     const msg = greetings[Math.floor(Math.random() * greetings.length)];
     setDialogue(msg);
   }, []);

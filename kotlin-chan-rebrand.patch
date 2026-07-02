@@ -1,0 +1,847 @@
+diff --git a/src/components/character/KotlinChan.css b/src/components/character/KotlinChan.css
+index 536cf75..f4b3c50 100644
+--- a/src/components/character/KotlinChan.css
++++ b/src/components/character/KotlinChan.css
+@@ -47,7 +47,7 @@
+   width: max-content;
+   pointer-events: all;
+   cursor: pointer;
+-  box-shadow: var(--shadow-md), 0 0 12px rgba(255,110,180,0.1);
++  box-shadow: var(--shadow-md);
+   text-align: left;
+   font-family: var(--font-ui);
+   background-color: var(--color-surface-2); /* override button default */
+@@ -55,7 +55,7 @@
+ }
+ 
+ .dialogue-bubble:hover {
+-  border-color: var(--color-pink);
++  border-color: var(--color-primary);
+ }
+ 
+ .dialogue-bubble p {
+@@ -103,18 +103,18 @@
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+-  /* Dark bg with orange tint to match her palette */
+-  background: rgba(10, 8, 5, 0.93);
++  /* Dark, near-neutral bg to match her calm/architectural palette */
++  background: rgba(6, 8, 11, 0.93);
+ }
+ 
+-/* Radial orange-pink glow in center */
++/* Radial cool slate/glass glow in center */
+ .domain-glow {
+   position: absolute;
+   inset: 0;
+   background:
+     radial-gradient(ellipse 60% 50% at 50% 60%,
+-      rgba(255, 120, 20, 0.18) 0%,
+-      rgba(255, 80, 160, 0.08) 50%,
++      rgba(143, 165, 194, 0.14) 0%,
++      rgba(170, 180, 194, 0.06) 50%,
+       transparent 80%);
+   pointer-events: none;
+ }
+@@ -143,8 +143,8 @@
+   height: 100%;
+   object-fit: contain;
+   object-position: bottom center;
+-  filter: drop-shadow(0 0 40px rgba(255, 140, 0, 0.5))
+-          drop-shadow(0 0 80px rgba(255, 80, 160, 0.2));
++  filter: drop-shadow(0 0 40px rgba(143, 165, 194, 0.35))
++          drop-shadow(0 0 80px rgba(170, 180, 194, 0.15));
+ }
+ 
+ .domain-dialogue {
+@@ -152,17 +152,16 @@
+   font-size: 1.05rem;
+   line-height: 1.75;
+   color: var(--color-text);
+-  background: rgba(20, 16, 10, 0.85);
+-  border: 1px solid rgba(255, 140, 0, 0.25);
++  background: rgba(13, 16, 23, 0.85);
++  border: 1px solid var(--color-border-accent);
+   border-radius: var(--radius-lg);
+   padding: 18px 26px;
+   backdrop-filter: blur(8px);
+-  box-shadow: 0 0 30px rgba(255,120,20,0.1);
+ }
+ 
+ .domain-tap-hint {
+   font-size: 0.72rem;
+-  color: rgba(255, 200, 120, 0.4);
++  color: rgba(232, 236, 240, 0.4);
+   letter-spacing: 0.12em;
+   text-transform: uppercase;
+   animation: domain-blink 1.8s ease-in-out infinite;
+@@ -171,4 +170,46 @@
+ @keyframes domain-blink {
+   0%, 100% { opacity: 0.25; }
+   50%       { opacity: 1; }
++}
++
++/* ══════════════════════════════════════════
++   SHIMMER MOTIF — the one flourish
++   A thin, cool-toned digital-line sweep, reserved
++   for thinking/teaching moments. Not applied globally.
++   ══════════════════════════════════════════ */
++
++.shimmer-sweep {
++  position: relative;
++  overflow: hidden;
++}
++
++.shimmer-sweep::after {
++  content: '';
++  position: absolute;
++  inset: 0;
++  pointer-events: none;
++  background: linear-gradient(
++    115deg,
++    transparent 40%,
++    rgba(185, 200, 217, 0.22) 48%,
++    rgba(255, 255, 255, 0.32) 50%,
++    rgba(185, 200, 217, 0.22) 52%,
++    transparent 60%
++  );
++  background-size: 220% 220%;
++  background-position: -140% -140%;
++  opacity: 0;
++  animation: shimmer-sweep 2.5s ease-in-out infinite;
++}
++
++@keyframes shimmer-sweep {
++  0%   { background-position: -140% -140%; opacity: 0; }
++  15%  { opacity: 0.9; }
++  55%  { background-position: 140% 140%; opacity: 0.9; }
++  70%, 100% { background-position: 140% 140%; opacity: 0; }
++}
++
++/* Dialogue bubble border shimmer on first appearance */
++.dialogue-bubble.shimmer-sweep::after {
++  border-radius: var(--radius-md);
+ }
+\ No newline at end of file
+diff --git a/src/components/character/KotlinChan.jsx b/src/components/character/KotlinChan.jsx
+index 4a8c3f2..86d5156 100644
+--- a/src/components/character/KotlinChan.jsx
++++ b/src/components/character/KotlinChan.jsx
+@@ -116,6 +116,9 @@ const KotlinChan = () => {
+   // Bob animation — only for idle/teaching, not sleep/frustrated
+   const shouldBob = ['idle', 'happy', 'surprised'].includes(displayExpression);
+ 
++  // Shimmer — her signature flourish, reserved for thinking/teaching moments
++  const shouldShimmer = ['thinking', 'domain'].includes(displayExpression);
++
+   return (
+     <>
+       {/* ── Domain Expansion Overlay ── */}
+@@ -134,7 +137,7 @@ const KotlinChan = () => {
+ 
+             <div className="domain-content">
+               <motion.div
+-                className="domain-sprite-wrap"
++                className={`domain-sprite-wrap${shouldShimmer ? ' shimmer-sweep' : ''}`}
+                 initial={{ scale: 0.7, y: 40 }}
+                 animate={{ scale: 1, y: 0 }}
+                 transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+@@ -181,7 +184,7 @@ const KotlinChan = () => {
+             {currentDialogue && (
+               <motion.button
+                 key={currentDialogue}
+-                className="dialogue-bubble"
++                className="dialogue-bubble shimmer-sweep"
+                 initial={{ opacity: 0, y: 10, scale: 0.93 }}
+                 animate={{ opacity: 1, y: 0,  scale: 1 }}
+                 exit={{    opacity: 0, y: -6, scale: 0.95 }}
+@@ -197,7 +200,7 @@ const KotlinChan = () => {
+ 
+           {/* Sprite */}
+           <motion.div
+-            className="kotlinchan-sprite-wrap"
++            className={`kotlinchan-sprite-wrap${shouldShimmer ? ' shimmer-sweep' : ''}`}
+             animate={shouldBob ? { y: [0, -5, 0] } : { y: 0 }}
+             transition={shouldBob
+               ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+diff --git a/src/components/layout/AnimatedBg.css b/src/components/layout/AnimatedBg.css
+index bcb6bb1..d426b9b 100644
+--- a/src/components/layout/AnimatedBg.css
++++ b/src/components/layout/AnimatedBg.css
+@@ -16,14 +16,14 @@
+   position: absolute;
+   border-radius: 50%;
+   filter: blur(90px);
+-  opacity: 0.28;
++  opacity: 0.16;
+   will-change: transform;
+ }
+ 
+ .aurora__blob--1 {
+   width: 600px;
+   height: 600px;
+-  background: radial-gradient(circle, rgba(124, 111, 255, 0.6) 0%, transparent 70%);
++  background: radial-gradient(circle, rgba(143, 165, 194, 0.45) 0%, transparent 70%);
+   top: -15%;
+   left: -10%;
+   animation: aurora-drift-1 22s ease-in-out infinite alternate;
+@@ -32,7 +32,7 @@
+ .aurora__blob--2 {
+   width: 500px;
+   height: 500px;
+-  background: radial-gradient(circle, rgba(100, 210, 255, 0.45) 0%, transparent 70%);
++  background: radial-gradient(circle, rgba(127, 212, 212, 0.32) 0%, transparent 70%);
+   top: 20%;
+   right: -8%;
+   animation: aurora-drift-2 28s ease-in-out infinite alternate;
+@@ -41,7 +41,7 @@
+ .aurora__blob--3 {
+   width: 450px;
+   height: 450px;
+-  background: radial-gradient(circle, rgba(180, 110, 255, 0.4) 0%, transparent 70%);
++  background: radial-gradient(circle, rgba(170, 180, 194, 0.28) 0%, transparent 70%);
+   bottom: -10%;
+   left: 25%;
+   animation: aurora-drift-3 18s ease-in-out infinite alternate;
+@@ -50,7 +50,7 @@
+ .aurora__blob--4 {
+   width: 350px;
+   height: 350px;
+-  background: radial-gradient(circle, rgba(124, 111, 255, 0.35) 0%, transparent 70%);
++  background: radial-gradient(circle, rgba(143, 165, 194, 0.22) 0%, transparent 70%);
+   top: 55%;
+   left: 55%;
+   animation: aurora-drift-4 24s ease-in-out infinite alternate;
+diff --git a/src/components/layout/AnimatedBg.jsx b/src/components/layout/AnimatedBg.jsx
+index 0c30fb7..64fc85a 100644
+--- a/src/components/layout/AnimatedBg.jsx
++++ b/src/components/layout/AnimatedBg.jsx
+@@ -51,7 +51,7 @@ const AnimatedBg = () => {
+             ctx.beginPath();
+             ctx.moveTo(particles[i].x, particles[i].y);
+             ctx.lineTo(particles[j].x, particles[j].y);
+-            ctx.strokeStyle = `rgba(124, 111, 255, ${alpha})`;
++            ctx.strokeStyle = `rgba(143, 165, 194, ${alpha})`;
+             ctx.lineWidth = 0.6;
+             ctx.stroke();
+           }
+@@ -62,7 +62,7 @@ const AnimatedBg = () => {
+       particles.forEach(p => {
+         ctx.beginPath();
+         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+-        ctx.fillStyle = `rgba(124, 111, 255, ${p.opacity})`;
++        ctx.fillStyle = `rgba(143, 165, 194, ${p.opacity})`;
+         ctx.fill();
+ 
+         // Move
+diff --git a/src/components/lesson/CodeBlock.css b/src/components/lesson/CodeBlock.css
+index 1b57330..5a71bee 100644
+--- a/src/components/lesson/CodeBlock.css
++++ b/src/components/lesson/CodeBlock.css
+@@ -13,7 +13,7 @@
+   text-transform: uppercase;
+   letter-spacing: 0.1em;
+   font-weight: 700;
+-  background: rgba(124, 111, 255, 0.08);
++  background: rgba(143, 165, 194, 0.08);
+   color: var(--color-primary);
+   font-family: var(--font-display);
+   border-bottom: 1px solid var(--color-border);
+@@ -33,7 +33,7 @@
+   padding: 0 2px;
+ }
+ 
+-.code-line:hover { background: rgba(124, 111, 255, 0.04); }
++.code-line:hover { background: rgba(143, 165, 194, 0.04); }
+ 
+ .code-line-number {
+   width: 36px;
+@@ -56,5 +56,5 @@
+ .token-number       { color: #ffb86c; }
+ .token-method       { color: var(--color-cyan); }
+ .token-class-name   { color: #e2c87a; }
+-.token-annotation   { color: #b46eff; font-weight: 600; }
++.token-annotation   { color: var(--color-primary); font-weight: 600; }
+ .token-operator     { color: #ff6e9c; }
+\ No newline at end of file
+diff --git a/src/components/lesson/LessonCanvas.css b/src/components/lesson/LessonCanvas.css
+index eb61fa4..62cf3b8 100644
+--- a/src/components/lesson/LessonCanvas.css
++++ b/src/components/lesson/LessonCanvas.css
+@@ -72,8 +72,8 @@
+ .phase-explanation code, .phase-prompt code {
+   font-family: var(--font-code);
+   font-size: 0.85em;
+-  background: rgba(124, 111, 255, 0.1);
+-  border: 1px solid rgba(124, 111, 255, 0.2);
++  background: rgba(143, 165, 194, 0.1);
++  border: 1px solid rgba(143, 165, 194, 0.2);
+   border-radius: 4px;
+   padding: 1px 6px;
+   color: var(--color-cyan);
+@@ -105,7 +105,7 @@
+ }
+ 
+ .phase-explanation th, .phase-prompt th {
+-  background: rgba(124, 111, 255, 0.1);
++  background: rgba(143, 165, 194, 0.1);
+   color: var(--color-primary-light);
+   font-weight: 700;
+   text-align: left;
+@@ -125,7 +125,7 @@
+ 
+ .phase-explanation tr:nth-child(even) td,
+ .phase-prompt tr:nth-child(even) td {
+-  background: rgba(124, 111, 255, 0.03);
++  background: rgba(143, 165, 194, 0.03);
+ }
+ 
+ .phase-explanation blockquote, .phase-prompt blockquote {
+diff --git a/src/components/ui/BottomBar.css b/src/components/ui/BottomBar.css
+index c2ed65c..238cc4e 100644
+--- a/src/components/ui/BottomBar.css
++++ b/src/components/ui/BottomBar.css
+@@ -43,7 +43,7 @@
+   width: 34px;
+   height: 34px;
+   font-size: 1rem;
+-  background: rgba(124, 111, 255, 0.08);
++  background: rgba(143, 165, 194, 0.08);
+   border: 1px solid var(--color-border-accent);
+   border-radius: var(--radius-full);
+   cursor: pointer;
+@@ -54,7 +54,7 @@
+   border-color: var(--color-primary);
+   box-shadow: 0 0 12px var(--color-primary-glow);
+   transform: translateY(-1px);
+-  background: rgba(124, 111, 255, 0.15);
++  background: rgba(143, 165, 194, 0.15);
+ }
+ 
+ .bottombar-level {
+diff --git a/src/components/ui/ProgressBar.css b/src/components/ui/ProgressBar.css
+index 86a1bba..75bba4f 100644
+--- a/src/components/ui/ProgressBar.css
++++ b/src/components/ui/ProgressBar.css
+@@ -8,7 +8,7 @@
+ .progress-bar-track {
+   width: 100%;
+   height: 4px;
+-  background: rgba(124, 111, 255, 0.1);
++  background: rgba(143, 165, 194, 0.1);
+   border-radius: var(--radius-full);
+   overflow: hidden;
+ }
+diff --git a/src/components/ui/Sidebar.css b/src/components/ui/Sidebar.css
+index f794eb4..7ae198a 100644
+--- a/src/components/ui/Sidebar.css
++++ b/src/components/ui/Sidebar.css
+@@ -76,7 +76,7 @@
+ }
+ 
+ .sidebar-unit-header:hover:not(:disabled) {
+-  background: rgba(124, 111, 255, 0.06);
++  background: rgba(143, 165, 194, 0.06);
+ }
+ 
+ .sidebar-unit-header--locked { opacity: 0.35; cursor: not-allowed; }
+@@ -118,13 +118,13 @@
+ }
+ 
+ .sidebar-lesson-btn:hover {
+-  background: rgba(124, 111, 255, 0.06);
++  background: rgba(143, 165, 194, 0.06);
+   color: var(--color-text);
+ }
+ 
+ .sidebar-lesson-btn--active {
+   color: var(--color-primary-light);
+-  background: rgba(124, 111, 255, 0.12);
++  background: rgba(143, 165, 194, 0.12);
+   border-right: 2px solid var(--color-primary);
+ }
+ 
+diff --git a/src/data/shopItems.js b/src/data/shopItems.js
+index c4a7f32..6c83132 100644
+--- a/src/data/shopItems.js
++++ b/src/data/shopItems.js
+@@ -2,14 +2,14 @@ export const SHOP_ITEMS = [
+   {
+     id: 'wallpaper-default',
+     type: 'wallpaper',
+-    name: 'Midnight Violet',
++    name: 'Midnight Slate',
+     requiredLevel: 1,
+     emoji: '🌌',
+-    accent: '#7c6fff',
++    accent: '#8fa5c2',
+     themeClass: '',
+-    gradient: 'linear-gradient(135deg, #07050f 0%, #0e0b1a 100%)',
++    gradient: 'linear-gradient(135deg, #0a0e14 0%, #12161f 100%)',
+     imageSrc: null,
+-    description: 'The default. Cold, precise, and deeply purple.',
++    description: 'The default. Cold, precise, and quietly composed.',
+   },
+   {
+     id: 'outfit-default',
+@@ -55,14 +55,14 @@ export const SHOP_ITEMS = [
+   {
+     id: 'wallpaper-steel',
+     type: 'wallpaper',
+-    name: 'Iron Throne',
++    name: 'Glass Panel',
+     requiredLevel: 3,
+     emoji: '⚙️',
+-    accent: '#5c7a94',
++    accent: '#aab4c2',
+     themeClass: 'theme-steel',
+-    gradient: 'linear-gradient(160deg, #080c10 0%, #0d1520 55%, #111a22 100%)',
++    gradient: 'linear-gradient(160deg, #12161f 0%, #1a1f2a 55%, #232935 100%)',
+     imageSrc: null,
+-    description: 'Gunmetal grey, deep crimson, abyssal blue eyes. The borrow checker\'s throne.',
++    description: 'Brushed glass, hairline steel. Every surface intentional.',
+   },
+   {
+     id: 'outfit-competitive-programmer',
+@@ -70,7 +70,7 @@ export const SHOP_ITEMS = [
+     name: 'Architecture Blazer',
+     requiredLevel: 4,
+     emoji: '🎀',
+-    accent: '#b46eff',
++    accent: '#8fa5c2',
+     filter: 'none',
+     spriteOverrides: {
+       idle:         { src: '/sprites/uniforms/comp/teaching.png',   blend: false },
+@@ -87,14 +87,14 @@ export const SHOP_ITEMS = [
+   {
+     id: 'wallpaper-indigo-gold',
+     type: 'wallpaper',
+-    name: 'Stormcaller',
++    name: 'Composed',
+     requiredLevel: 5,
+     emoji: '👑',
+-    accent: '#5b4a8c',
++    accent: '#5f7591',
+     themeClass: 'theme-indigo-gold',
+-    gradient: 'linear-gradient(160deg, #08060f 0%, #130d28 55%, #1a1030 100%)',
++    gradient: 'linear-gradient(160deg, #0a0e14 0%, #141a24 45%, #1a1f2a 100%), linear-gradient(90deg, transparent 48%, rgba(232,217,184,0.35) 50%, transparent 52%)',
+     imageSrc: null,
+-    description: 'Storm grey, charcoal, blazing orange lightning. The storm unleashed.',
++    description: 'Navy and charcoal, one thin line of cream. Nothing extra.',
+   },
+   {
+     id: 'outfit-Witch',
+@@ -119,14 +119,14 @@ export const SHOP_ITEMS = [
+   {
+     id: 'wallpaper-crimson',
+     type: 'wallpaper',
+-    name: 'Neon Alley',
++    name: 'Night Build',
+     requiredLevel: 7,
+-    emoji: '🔴',
+-    accent: '#d6203f',
++    emoji: '🌑',
++    accent: '#3d4656',
+     themeClass: 'theme-crimson',
+-    gradient: 'linear-gradient(160deg, #0f0508 0%, #1e0810 55%, #150510 100%)',
++    gradient: 'linear-gradient(160deg, #0d1017 0%, #171c26 55%, #0d1017 100%)',
+     imageSrc: null,
+-    description: 'Deep crimson, black, neon orange. A rain-slicked alley at 2 a.m.',
++    description: 'Near-monochrome charcoal, one cool accent. Late, but clean.',
+   },
+   {
+     id: 'outfit-military',
+@@ -151,14 +151,14 @@ export const SHOP_ITEMS = [
+   {
+     id: 'wallpaper-terminal',
+     type: 'wallpaper',
+-    name: 'Compiled',
++    name: 'Clean Compile',
+     requiredLevel: 9,
+     emoji: '💻',
+-    accent: '#39d97a',
++    accent: '#7fd4d4',
+     themeClass: 'theme-terminal',
+-    gradient: 'linear-gradient(160deg, #050f08 0%, #081a0e 55%, #050f08 100%)',
++    gradient: 'linear-gradient(160deg, #050a08 0%, #0a1512 55%, #050a08 100%)',
+     imageSrc: null,
+-    description: 'Cool blue, terminal green, matte black. The channel room, no warnings.',
++    description: 'Cool slate, soft teal, matte black. No warnings.',
+   },
+   {
+     id: 'outfit-legendary',
+@@ -166,7 +166,7 @@ export const SHOP_ITEMS = [
+     name: 'Published Crown',
+     requiredLevel: 10,
+     emoji: '👘',
+-    accent: '#7c6fff',
++    accent: '#e8d9b8',
+     filter: 'none',
+     spriteOverrides: {
+       idle:         { src: '/sprites/uniforms/queen/teaching.png',   blend: false },
+@@ -299,8 +299,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-01',
+     name: 'The Material Studio',
+     emoji: '🌆',
+-    gradient: 'linear-gradient(160deg, #2a1a2e 0%, #4a1a3e 60%, #1a0f1a 100%)',
+-    accent: '#b46eff',
++    gradient: 'linear-gradient(160deg, #0a0e14 0%, #12161f 60%, #1a1f2a 100%)',
++    accent: '#8fa5c2',
+     imageSrc: '/wallpapers/kotlinchan-compile-time.png',
+     fileName: 'kotlinchan-compile-time.png',
+     description: 'She\'s designing the future of mobile.',
+@@ -310,8 +310,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-02',
+     name: 'Compose Preview',
+     emoji: '🏰',
+-    gradient: 'linear-gradient(160deg, #07050f 0%, #0e0b1a 55%, #130f22 100%)',
+-    accent: '#7c6fff',
++    gradient: 'linear-gradient(160deg, #0a0e14 0%, #12161f 55%, #1a1f2a 100%)',
++    accent: '#8fa5c2',
+     imageSrc: '/wallpapers/kotlinchan-the-stack.png',
+     fileName: 'kotlinchan-the-stack.png',
+     description: 'This is how it should look.',
+@@ -321,8 +321,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-03',
+     name: 'The Coroutine',
+     emoji: '🌧️',
+-    gradient: 'linear-gradient(160deg, #0a0518 0%, #1a0f3e 55%, #2e1a4a 100%)',
+-    accent: '#b46eff',
++    gradient: 'linear-gradient(160deg, #0a0e14 0%, #12161f 55%, #1a1f2a 100%)',
++    accent: '#5f7591',
+     imageSrc: '/wallpapers/kotlinchan-rainy.png',
+     fileName: 'kotlinchan-rainy-commute.png',
+     description: 'Juggling six tasks. None block.',
+@@ -332,8 +332,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-04',
+     name: 'Material You Sunset',
+     emoji: '🌅',
+-    gradient: 'linear-gradient(160deg, #2e1a0a 0%, #4a2e1a 55%, #1a0f0a 100%)',
+-    accent: '#ffcc6e',
++    gradient: 'linear-gradient(160deg, #12161f 0%, #1a1f2a 55%, #1f2530 100%)',
++    accent: '#e8d9b8',
+     imageSrc: '/wallpapers/kotlinchan-vacation-build.png',
+     fileName: 'kotlinchan-vacation-build.png',
+     description: 'The sky shifts through her palette.',
+@@ -344,8 +344,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-05',
+     name: 'The ViewModel',
+     emoji: '🌸',
+-    gradient: 'linear-gradient(160deg, #2e1a2a 0%, #3d1a35 55%, #1a0f1a 100%)',
+-    accent: '#ffb7d5',
++    gradient: 'linear-gradient(160deg, #12161f 0%, #1a1f2a 55%, #1f2530 100%)',
++    accent: '#b9c8d9',
+     imageSrc: '/wallpapers/kotlinchan-sakura.png',
+     fileName: 'kotlinchan-cherry-blossom.png',
+     description: 'Faint diagrams of StateFlow. She\'s explaining silently.',
+@@ -357,8 +357,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-mountain-summit',
+     name: 'Clean Architecture',
+     emoji: '🏔️',
+-    gradient: 'linear-gradient(160deg, #0f0c00 0%, #2a2000 55%, #1a1500 100%)',
+-    accent: '#ffcc6e',
++    gradient: 'linear-gradient(160deg, #0d1017 0%, #171c26 55%, #1a1f2a 100%)',
++    accent: '#e8d9b8',
+     imageSrc: '/wallpapers/kotlinchan-mountain-summit.png',
+     fileName: 'kotlinchan-mountain-summit.png',
+     description: 'Every layer has a purpose.',
+@@ -370,8 +370,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-autumn-library',
+     name: 'The Gradle Build',
+     emoji: '📚',
+-    gradient: 'linear-gradient(160deg, #1a0f00 0%, #2e1a00 55%, #1a1000 100%)',
+-    accent: '#ffaa55',
++    gradient: 'linear-gradient(160deg, #0d1017 0%, #1a1f2a 55%, #1f2530 100%)',
++    accent: '#aab4c2',
+     imageSrc: '/wallpapers/kotlinchan-autumn-library.png',
+     fileName: 'kotlinchan-autumn-library.png',
+     description: 'Successful build. She\'s content.',
+@@ -383,8 +383,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-rooftop-garden',
+     name: 'The Glasswork Architect',
+     emoji: '🌿',
+-    gradient: 'linear-gradient(160deg, #001a0a 0%, #002e12 55%, #001a08 100%)',
+-    accent: '#7fff9b',
++    gradient: 'linear-gradient(160deg, #0a1512 0%, #12201c 55%, #0d1017 100%)',
++    accent: '#7fd4d4',
+     imageSrc: '/wallpapers/kotlinchan-rooftop-garden.png',
+     fileName: 'kotlinchan-rooftop-garden.png',
+     description: 'Not just building apps. Building systems.',
+@@ -395,8 +395,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-neon-arcade',
+     name: 'Play Store Live',
+     emoji: '🕹️',
+-    gradient: 'linear-gradient(160deg, #1a0010 0%, #2e0020 55%, #1a000f 100%)',
+-    accent: '#ff69b4',
++    gradient: 'linear-gradient(160deg, #0d1017 0%, #171c26 55%, #1a1f2a 100%)',
++    accent: '#8fa5c2',
+     imageSrc: '/wallpapers/kotlinchan-neon-arcade.png',
+     fileName: 'kotlinchan-neon-arcade.png',
+     description: 'It\'s live. She earned this.',
+@@ -407,8 +407,8 @@ export const DOWNLOADABLE_WALLPAPERS = [
+     id: 'dl-wallpaper-shrine-steps',
+     name: 'Beach Evening',
+     emoji: '🏮',
+-    gradient: 'linear-gradient(160deg, #1a0f0a 0%, #2a1a10 55%, #1a0f08 100%)',
+-    accent: '#ffccaa',
++    gradient: 'linear-gradient(160deg, #12161f 0%, #1a1f2a 55%, #1f2530 100%)',
++    accent: '#e8d9b8',
+     imageSrc: '/wallpapers/kotlinchan-shrine-steps.png',
+     fileName: 'kotlinchan-shrine-steps.png',
+     description: 'Off the clock. She\'s earned this.',
+diff --git a/src/pages/Home.css b/src/pages/Home.css
+index 18d8922..a75e383 100644
+--- a/src/pages/Home.css
++++ b/src/pages/Home.css
+@@ -53,7 +53,7 @@
+ .stat-card--shop {
+   cursor: pointer;
+   border-style: dashed;
+-  border-color: rgba(124, 111, 255, 0.2);
++  border-color: rgba(143, 165, 194, 0.2);
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+@@ -62,7 +62,7 @@
+ 
+ .stat-card--shop:hover {
+   border-style: solid;
+-  background: rgba(124, 111, 255, 0.08);
++  background: rgba(143, 165, 194, 0.08);
+ }
+ 
+ .stat-shop-icon { font-size: 1.6rem; }
+@@ -104,7 +104,7 @@
+ 
+ .stat-bar-track {
+   height: 3px;
+-  background: rgba(124, 111, 255, 0.12);
++  background: rgba(143, 165, 194, 0.12);
+   border-radius: var(--radius-full);
+   overflow: hidden;
+   margin-top: 6px;
+@@ -155,7 +155,7 @@
+   background-size: 200% 200%;
+   background-position: 0% 50%;
+   color: white;
+-  box-shadow: 0 4px 24px var(--color-primary-glow), 0 0 0 1px rgba(124,111,255,0.3);
++  box-shadow: 0 4px 24px var(--color-primary-glow), 0 0 0 1px rgba(143, 165, 194,0.3);
+ }
+ 
+ .cta-btn--primary:hover {
+@@ -228,7 +228,7 @@
+ 
+ .unit-card--active:hover {
+   border-color: var(--color-primary);
+-  background: rgba(124, 111, 255, 0.07);
++  background: rgba(143, 165, 194, 0.07);
+   box-shadow: 0 4px 24px var(--color-primary-glow);
+   transform: translateY(-2px);
+ }
+@@ -278,7 +278,7 @@
+ 
+ .unit-card-bar-track {
+   height: 2px;
+-  background: rgba(124, 111, 255, 0.1);
++  background: rgba(143, 165, 194, 0.1);
+   border-radius: var(--radius-full);
+   overflow: hidden;
+   margin-top: 4px;
+diff --git a/src/pages/UnitPage.css b/src/pages/UnitPage.css
+index c5474bc..2b99a1f 100644
+--- a/src/pages/UnitPage.css
++++ b/src/pages/UnitPage.css
+@@ -55,7 +55,7 @@
+ 
+ .unit-lesson-card:hover {
+   border-color: var(--color-primary);
+-  background: rgba(124, 111, 255, 0.07);
++  background: rgba(143, 165, 194, 0.07);
+   box-shadow: 0 2px 16px var(--color-primary-glow);
+   transform: translateY(-1px);
+ }
+diff --git a/src/styles/globals.css b/src/styles/globals.css
+index 9b38e77..db92faf 100644
+--- a/src/styles/globals.css
++++ b/src/styles/globals.css
+@@ -1,33 +1,36 @@
+ /* ============================================
+-   Kotlin-Chan DESIGN SYSTEM — Dark Fantasy
++   Kotlin-Chan DESIGN SYSTEM — Sleek / Calm / Architectural
+    All CSS variables live here. Never hardcode
+    colors or spacing anywhere else.
+    ============================================ */
+ 
+-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@700;900&display=swap');
++@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+ 
+ :root {
+   /* --- Core Palette --- */
+-  --color-bg:            #07050f;
+-  --color-surface:       #0e0b1a;
+-  --color-surface-2:     #130f22;
+-  --color-surface-3:     #0b0917;
+-  --color-border:        rgba(124, 111, 255, 0.1);
+-  --color-border-accent: rgba(124, 111, 255, 0.28);
+-
+-  /* --- Kotlin-Chan Brand Colors (electric blue/violet) --- */
+-  --color-primary:        #7c6fff;
+-  --color-primary-light:  #a99fff;
+-  --color-primary-dark:   #5a4fd6;
+-  --color-primary-glow:   rgba(124, 111, 255, 0.22);
+-
+-  --color-cyan:           #64d2ff;
++  --color-bg:            #0a0e14;
++  --color-surface:       #12161f;
++  --color-surface-2:     #1a1f2a;
++  --color-surface-3:     #0d1017;
++  --color-border:        rgba(170, 180, 194, 0.10);
++  --color-border-accent: rgba(170, 180, 194, 0.30);
++
++  /* --- Kotlin-Chan Brand Colors (cool slate-blue, calm & architectural) --- */
++  --color-primary:        #8fa5c2;
++  --color-primary-light:  #b9c8d9;
++  --color-primary-dark:   #5f7591;
++  --color-primary-glow:   rgba(143, 165, 194, 0.12);
++
++  --color-cyan:           #7fd4d4;
+   --color-cyan-light:     #9de3ff;
+   --color-cyan-glow:      rgba(100, 210, 255, 0.18);
+ 
+-  --color-violet:         #b46eff;
+-  --color-violet-light:   #d4aaff;
+-  --color-violet-glow:    rgba(180, 110, 255, 0.18);
++  /* --color-violet retired — no violet in the new palette.
++     Former call sites now use --color-primary or --color-cream. */
++
++  /* --- Rare warm accent --- */
++  --color-cream:          #f2ede3;
++  --color-cream-glow:     rgba(242, 237, 227, 0.10);
+ 
+   /* --- Semantic Colors --- */
+   --color-success:        #4fffb0;
+@@ -35,16 +38,16 @@
+   --color-error:          #ff4f7b;
+   --color-error-glow:     rgba(255, 79, 123, 0.15);
+   --color-warning:        #ffc76e;
+-  --color-xp:             #7c6fff;
++  --color-xp:             #e8d9b8;
+ 
+   /* --- Text --- */
+-  --color-text:           #e8e0ff;
+-  --color-text-muted:     rgba(232, 224, 255, 0.5);
+-  --color-text-faint:     rgba(232, 224, 255, 0.25);
++  --color-text:           #e8ecf0;
++  --color-text-muted:     rgba(232, 236, 240, 0.5);
++  --color-text-faint:     rgba(232, 236, 240, 0.25);
+ 
+   /* --- Typography --- */
+   --font-ui:              'Inter', sans-serif;
+-  --font-display:         'Orbitron', sans-serif;
++  --font-display:         'Space Grotesk', sans-serif;
+   --font-code:            'JetBrains Mono', monospace;
+ 
+   /* --- Sizing --- */
+@@ -54,19 +57,20 @@
+   --kotlinchan-height:  320px;
+   --topbar-height:        56px;
+ 
+-  /* --- Radii --- */
+-  --radius-sm:    6px;
+-  --radius-md:    12px;
+-  --radius-lg:    20px;
+-  --radius-xl:    32px;
++  /* --- Radii (sharper, more precise) --- */
++  --radius-sm:    4px;
++  --radius-md:    6px;
++  --radius-lg:    10px;
++  --radius-xl:    14px;
+   --radius-full:  9999px;
+ 
+   /* --- Shadows --- */
+   --shadow-sm:      0 2px 8px rgba(0,0,0,0.4);
+   --shadow-md:      0 4px 24px rgba(0,0,0,0.5);
+   --shadow-lg:      0 8px 48px rgba(0,0,0,0.7);
+-  --shadow-primary: 0 0 20px var(--color-primary-glow), 0 0 60px rgba(124,111,255,0.08);
+-  --shadow-glow:    0 0 30px var(--color-primary-glow);
++  /* --shadow-primary retired — call sites use a hairline border instead. */
++  /* --shadow-glow reserved for the shimmer motif only (see KotlinChan.css). */
++  --shadow-glow:    0 0 16px var(--color-primary-glow);
+ 
+   /* --- Transitions --- */
+   --transition-fast:   0.15s ease;
+@@ -79,42 +83,46 @@
+    THEME OVERRIDES (shop-unlockable)
+    ============================================ */
+ .theme-steel {
+-  --color-primary:        #8fb8d0;
+-  --color-primary-light:  #b8d4e8;
+-  --color-primary-dark:   #6090aa;
+-  --color-primary-glow:   rgba(143, 184, 208, 0.22);
+-  --color-border-accent:  rgba(143, 184, 208, 0.28);
+-  --color-xp:             #8fb8d0;
++  /* Glass Panel */
++  --color-primary:        #aab4c2;
++  --color-primary-light:  #cdd5dc;
++  --color-primary-dark:   #7e8994;
++  --color-primary-glow:   rgba(170, 180, 194, 0.12);
++  --color-border-accent:  rgba(170, 180, 194, 0.32);
++  --color-xp:             #e8d9b8;
+ }
+ 
+ .theme-indigo-gold {
+-  --color-primary:        #9b6fff;
+-  --color-primary-light:  #c4a0ff;
+-  --color-primary-dark:   #7044dd;
+-  --color-primary-glow:   rgba(155, 111, 255, 0.22);
+-  --color-border-accent:  rgba(155, 111, 255, 0.28);
+-  --color-xp:             #ffd700;
+-  --color-cyan:           #ffd700;
+-  --color-cyan-light:     #ffe566;
++  /* Composed — cool base, cream trim */
++  --color-primary:        #5f7591;
++  --color-primary-light:  #8095ac;
++  --color-primary-dark:   #46596f;
++  --color-primary-glow:   rgba(95, 117, 145, 0.14);
++  --color-border-accent:  rgba(95, 117, 145, 0.30);
++  --color-xp:             #e8d9b8;
++  --color-cyan:           #e8d9b8;
++  --color-cyan-light:     #f2ede3;
+ }
+ 
+ .theme-crimson {
+-  --color-primary:        #ff4f7b;
+-  --color-primary-light:  #ff8fa8;
+-  --color-primary-dark:   #cc2255;
+-  --color-primary-glow:   rgba(255, 79, 123, 0.22);
+-  --color-border-accent:  rgba(255, 79, 123, 0.28);
+-  --color-xp:             #ff4f7b;
++  /* Night Build — near-monochrome charcoal, one cool accent */
++  --color-primary:        #3d4656;
++  --color-primary-light:  #6b7789;
++  --color-primary-dark:   #262d38;
++  --color-primary-glow:   rgba(61, 70, 86, 0.16);
++  --color-border-accent:  rgba(61, 70, 86, 0.34);
++  --color-xp:             #e8d9b8;
+ }
+ 
+ .theme-terminal {
+-  --color-primary:        #4fffb0;
+-  --color-primary-light:  #9fffd8;
+-  --color-primary-dark:   #2acc80;
+-  --color-primary-glow:   rgba(79, 255, 176, 0.22);
+-  --color-border-accent:  rgba(79, 255, 176, 0.28);
+-  --color-xp:             #4fffb0;
+-  --color-cyan:           #4fffb0;
++  /* Clean Compile */
++  --color-primary:        #7fd4d4;
++  --color-primary-light:  #a6e4e4;
++  --color-primary-dark:   #4fa8a8;
++  --color-primary-glow:   rgba(127, 212, 212, 0.14);
++  --color-border-accent:  rgba(127, 212, 212, 0.30);
++  --color-xp:             #e8d9b8;
++  --color-cyan:           #7fd4d4;
+ }
+ 
+ /* ============================================
