@@ -51,9 +51,10 @@
 .token-keyword      { color: #7c9fff; font-weight: 600; }
 .token-type         { color: #9ecbff; }
 .token-string       { color: #7eeaaa; }
+.token-template     { color: var(--color-cyan); font-weight: 600; }
 .token-comment      { color: #5a6075; font-style: italic; }
 .token-number       { color: #ffb86c; }
 .token-method       { color: var(--color-cyan); }
 .token-class-name   { color: #e2c87a; }
-.token-preprocessor { color: #b46eff; font-weight: 600; }
+.token-annotation   { color: #b46eff; font-weight: 600; }
 .token-operator     { color: #ff6e9c; }
