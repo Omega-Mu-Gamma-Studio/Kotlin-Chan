@@ -43,7 +43,7 @@
   width: 34px;
   height: 34px;
   font-size: 1rem;
-  background: rgba(124, 111, 255, 0.08);
+  background: rgba(143, 165, 194, 0.08);
   border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-full);
   cursor: pointer;
@@ -54,7 +54,7 @@
   border-color: var(--color-primary);
   box-shadow: 0 0 12px var(--color-primary-glow);
   transform: translateY(-1px);
-  background: rgba(124, 111, 255, 0.15);
+  background: rgba(143, 165, 194, 0.15);
 }
 
 .bottombar-level {

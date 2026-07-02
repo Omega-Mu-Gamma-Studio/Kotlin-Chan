@@ -116,6 +116,9 @@ const KotlinChan = () => {
   // Bob animation — only for idle/teaching, not sleep/frustrated
   const shouldBob = ['idle', 'happy', 'surprised'].includes(displayExpression);
 
+  // Shimmer — her signature flourish, reserved for thinking/teaching moments
+  const shouldShimmer = ['thinking', 'domain'].includes(displayExpression);
+
   return (
     <>
       {/* ── Domain Expansion Overlay ── */}
@@ -134,7 +137,7 @@ const KotlinChan = () => {
 
             <div className="domain-content">
               <motion.div
-                className="domain-sprite-wrap"
+                className={`domain-sprite-wrap${shouldShimmer ? ' shimmer-sweep' : ''}`}
                 initial={{ scale: 0.7, y: 40 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 20 }}
@@ -181,7 +184,7 @@ const KotlinChan = () => {
             {currentDialogue && (
               <motion.button
                 key={currentDialogue}
-                className="dialogue-bubble"
+                className="dialogue-bubble shimmer-sweep"
                 initial={{ opacity: 0, y: 10, scale: 0.93 }}
                 animate={{ opacity: 1, y: 0,  scale: 1 }}
                 exit={{    opacity: 0, y: -6, scale: 0.95 }}
@@ -197,7 +200,7 @@ const KotlinChan = () => {
 
           {/* Sprite */}
           <motion.div
-            className="kotlinchan-sprite-wrap"
+            className={`kotlinchan-sprite-wrap${shouldShimmer ? ' shimmer-sweep' : ''}`}
             animate={shouldBob ? { y: [0, -5, 0] } : { y: 0 }}
             transition={shouldBob
               ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }

@@ -51,7 +51,7 @@ const AnimatedBg = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(124, 111, 255, ${alpha})`;
+            ctx.strokeStyle = `rgba(143, 165, 194, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -62,7 +62,7 @@ const AnimatedBg = () => {
       particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(124, 111, 255, ${p.opacity})`;
+        ctx.fillStyle = `rgba(143, 165, 194, ${p.opacity})`;
         ctx.fill();
 
         // Move
